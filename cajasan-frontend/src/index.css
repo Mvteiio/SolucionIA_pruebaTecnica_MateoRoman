@@ -1,0 +1,13 @@
+@import "tailwindcss";
+
+@theme {
+  --color-cajasan-blue: #0033A0;
+  --color-cajasan-light: #F8FAFC;
+  --font-sans: "Inter", sans-serif;
+}
+
+@layer base {
+  body {
+    @apply bg-white text-slate-900;
+  }
+}
