@@ -1,16 +1,34 @@
 {
   "name": "cajasan-ai-inbox",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "version": "2.0.0",
+  "description": "Sistema inteligente de análisis de correos con Azure OpenAI para Cajasan",
+  "main": "processor.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node processor.js",
+    "test": "node test-azure-openai.js",
+    "verify": "node test-azure-openai.js"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "keywords": [
+    "azure",
+    "openai",
+    "email",
+    "outlook",
+    "ai",
+    "automation"
+  ],
+  "author": "Cajasan IT Team",
+  "license": "MIT",
   "dependencies": {
-    "@google/generative-ai": "^0.24.1",
-    "dotenv": "^17.2.3"
+    "@azure/identity": "^4.6.0",
+    "@microsoft/microsoft-graph-client": "^3.0.7",
+    "dotenv": "^16.4.7",
+    "isomorphic-fetch": "^3.0.0",
+    "openai": "^4.104.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   }
 }
