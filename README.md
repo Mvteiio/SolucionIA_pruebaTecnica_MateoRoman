@@ -1,84 +1,102 @@
+# Cajasan AI Inbox (Uso Interno)
 
-# 📩 Cajasan AI-CORE: Intelligent Email Management System
+Solucion monorepo para procesar correos de Outlook con Azure OpenAI y visualizarlos en un dashboard React.
 
-Este proyecto es una solución integral para el procesamiento masivo de comunicaciones institucionales de **Cajasan**. Utiliza Inteligencia Artificial Generativa para transformar una bandeja de entrada saturada en un panel de control operativo de alta eficiencia.
+## Stack actual
+- Backend: Node.js (Microsoft Graph + Azure OpenAI)
+- Frontend: React + Vite + Tailwind CSS 4
+- Arquitectura: monorepo (`cajasan-ai-inbox` + `cajasan-frontend`)
 
-![Texto alternativo](https://cajasan.com/images/plantilla/16-9.webp)
-
-### El reto
-El personal administrativo de Cajasan se enfrenta a volúmenes superiores a los 8,000 correos electrónicos, lo que requiere aproximadamente 4 horas de revisión manual. **AI-CORE** reduce este tiempo a menos de una hora, clasificando, resumiendo y priorizando cada mensaje automáticamente.
-
-## 🛠️ Stack Tecnológico
-* **IA Engine:** Google Gemini 2.5 Flash (API)
-* **Backend:** Node.js
-* **Frontend:** React + Tailwind CSS 4.0
-* **Arquitectura:** Monorepo
-
-## 💡 Funcionalidades
-* Procesamiento por lotes
-* Clasificación por categoría, prioridad y sentimiento
-* Acción recomendada automática
-* Dashboard con KPIs
-
-## 📂 Estructura
+## Estructura
 ```text
-cajasan-ai-solution/
-├── .gitignore                # Reglas para no subir basura ni llaves privadas
-├── README.md                 # Documentación profesional que redactamos
-│
-├── cajasan-ai-inbox/             # MOTOR DE INTELIGENCIA ARTIFICIAL (Node.js)
-│   ├── node_modules/         # Dependencias del backend
-│   ├── .env                  # Tu API KEY de Gemini (No se sube a GitHub)
-│   ├── data.json             # Dataset de entrada (400 correos)
-│   ├── generateData.js       # Script para crear los datos de prueba
-│   ├── processor.js          # El "Cerebro": script de procesamiento masivo
-│   ├── package.json          # Scripts y dependencias (google-generative-ai, dotenv)
-│   └── resultado_final_cajasan.json  # El archivo final procesado por la IA
-│
-└── cajasan-frontend/             # INTERFAZ DE USUARIO (React + Tailwind 4.0)
-    ├── node_modules/         # Dependencias del frontend
-    ├── public/
-    │   └── logo-cajasan.png  # Logo para la pestaña del navegador
-    ├── src/
-    │   ├── assets/
-    │   │   └── logo-cajasan.png # Logo que usamos en el Nav
-    │   ├── data/
-    │   │   └── resultado_final_cajasan.json # Copia de los resultados del motor
-    │   ├── App.jsx           # Dashboard principal con filtros y buscador
-    │   ├── index.css         # Configuración de Tailwind 4.0 y variables de marca
-    │   └── main.jsx          # Punto de entrada de React
-    ├── index.html            # Estructura base HTML
-    ├── package.json          # Scripts de Vite y dependencias
-    └── vite.config.js        # Configuración del plugin de Tailwind 4.0
+.
+├── .github/
+│   └── workflows/
+│       └── ci.yml
+├── cajasan-ai-inbox/
+│   ├── src/
+│   │   ├── app/            # Orquestación del flujo
+│   │   ├── config/         # Carga y validación de entorno
+│   │   ├── domain/         # Reglas de negocio y contrato de datos
+│   │   ├── services/       # Integraciones externas (Graph, OpenAI)
+│   │   ├── storage/        # Persistencia local
+│   │   └── utils/          # Utilidades compartidas
+│   ├── tests/              # Pruebas unitarias (node:test)
+│   ├── auth.js             # Wrapper legacy
+│   ├── outlookService.js   # Wrapper legacy
+│   ├── processor.js        # Entry point
+│   ├── resultado_final_cajasan.json
+│   ├── .env.example
+│   └── package.json
+├── cajasan-frontend/
+│   ├── src/
+│   ├── package.json
+│   └── vite.config.js
+└── README.md
 ```
 
-## ⚙️ Instalación
+## Backend (`cajasan-ai-inbox`)
+
+### 1) Configuracion
+Crear `.env` tomando como base `.env.example`:
+
+```bash
+cd cajasan-ai-inbox
+cp .env.example .env
+```
+
+Variables requeridas:
+- `AZURE_TENANT_ID`
+- `AZURE_CLIENT_ID`
+- `AZURE_OPENAI_ENDPOINT`
+- `AZURE_OPENAI_API_KEY`
+- `AZURE_OPENAI_DEPLOYMENT`
+- `AZURE_OPENAI_API_VERSION`
+
+### 2) Ejecucion
 ```bash
 cd cajasan-ai-inbox
 npm install
-node generateData.js
-node processor.js
+npm start
 ```
 
+Notas:
+- El backend usa autenticacion interactiva de Azure (`InteractiveBrowserCredential`), por lo que abre login en navegador.
+- El resultado se guarda en `cajasan-ai-inbox/resultado_final_cajasan.json`.
+- El procesamiento usa lotes y reintentos automáticos para errores transitorios (incluyendo 429).
+
+### Scripts
+```bash
+npm start
+npm test
+npm run verify
+```
+
+`test` ejecuta pruebas unitarias con `node:test`.  
+`verify` revisa sintaxis de entrypoint y módulos backend.
+
+## Frontend (`cajasan-frontend`)
 ```bash
 cd cajasan-frontend
 npm install
 npm run dev
 ```
 
-## 🧠 Prompt Engineering
-System prompt como coordinador senior + salida JSON estricta.
+Build de produccion:
+```bash
+npm run build
+```
 
-## 👤 Autor
-Mateo Roman - Desarrollador de Software - [Acerca de mí](https://github.com/Mvteiio) 
+## Notas operativas
+- El frontend consume directamente el JSON generado por backend:
+  - `cajasan-frontend/src/App.jsx` importa `../../cajasan-ai-inbox/resultado_final_cajasan.json`.
+- El `.gitignore` excluye `.env` y artefactos de build.
 
----
-## .gitignore
-
-```text
-node_modules/
-.env
-dist/
-resultado_final_cajasan.json
-.vscode/
+## Comandos de workspace (raíz)
+```bash
+npm run test
+npm run verify
+npm run lint
+npm run build
+npm run check
 ```

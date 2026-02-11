@@ -1,4 +1,16 @@
 {
+  "private": true,
+  "workspaces": [
+    "cajasan-ai-inbox",
+    "cajasan-frontend"
+  ],
+  "scripts": {
+    "test": "npm --prefix cajasan-ai-inbox test",
+    "verify": "npm --prefix cajasan-ai-inbox run verify",
+    "lint": "npm --prefix cajasan-frontend run lint",
+    "build": "npm --prefix cajasan-frontend run build",
+    "check": "npm run test && npm run verify && npm run lint && npm run build"
+  },
   "dependencies": {
     "groq-sdk": "^0.37.0"
   }

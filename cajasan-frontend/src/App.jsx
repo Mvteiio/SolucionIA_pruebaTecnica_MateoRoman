@@ -334,7 +334,7 @@ export default function App() {
                       {typeof item.datos_clave === 'object' ? (
                         Object.entries(item.datos_clave).map(([key, value]) => (
                           <div key={key} className="bg-slate-50 px-3 py-2 rounded-lg border border-slate-100 text-xs flex items-center gap-2">
-                            <span className="font-bold text-slate-700">{key}:</span> 
+                            <span className="font-bold text-slate-700">{isNaN(key) ? key : parseInt(key) + 1}:</span> 
                             <span className="text-slate-500 truncate" title={typeof value === 'object' && value !== null ? JSON.stringify(value) : value}>
                               {typeof value === 'object' && value !== null ? JSON.stringify(value) : value}
                             </span>
