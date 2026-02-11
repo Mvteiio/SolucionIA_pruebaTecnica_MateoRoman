@@ -100,3 +100,5 @@ npm run lint
 npm run build
 npm run check
 ```
+
+Nota: actualización menor para re-disparar CI.
